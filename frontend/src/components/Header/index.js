@@ -15,7 +15,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     localStorage.removeItem("token");
-    setAuth(false);
+    setAuth(null);
 
     document.location.reload();
   };

@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { store } from "../../App";
 
@@ -19,9 +19,8 @@ const SignUp = () => {
     confirmpassword: "",
   });
 
-  const navigate = useNavigate();
-
   const [error, setError] = useState("");
+  const [reserror, setResError] = useState("");
 
   const { username, email, password, confirmpassword } = newUser;
 
@@ -42,7 +41,7 @@ const SignUp = () => {
         console.log(res);
         if (res.ok) {
           setNewUser({
-            name: "",
+            username: "",
             email: "",
             password: "",
             confirmpassword: "",
@@ -53,16 +52,12 @@ const SignUp = () => {
       .then((data) => {
         console.log("data", data);
         toast(data?.message);
-        setAuth(true);
-        navigate("/");
-
-        setError(data);
       })
       .catch((err) => {
         console.log("err", err);
-        setError(err?.message);
+        setResError(err?.error);
 
-        toast.warn(err);
+        toast.warn(err?.error);
       });
   };
   const signUpSubmitHandler = (e) => {
@@ -70,7 +65,12 @@ const SignUp = () => {
 
     console.log(newUser);
 
-    sendUserDetails();
+    if (password.length < 8) {
+      setError("password length must be above 8");
+    } else {
+      setError("");
+      sendUserDetails();
+    }
   };
   return (
     <form onSubmit={signUpSubmitHandler}>
@@ -105,6 +105,7 @@ const SignUp = () => {
           id="password"
           name="password"
           value={password}
+          maxLength={8}
           onChange={eventHandler}
           placeholder="Enter your password"
           required
@@ -116,13 +117,15 @@ const SignUp = () => {
           type="text"
           id="confirmpassword"
           name="confirmpassword"
+          maxLength={8}
           value={confirmpassword}
           onChange={eventHandler}
           placeholder="Re Enter your password"
           required
         />
       </div>
-      {/* {error ? <p style={{ color: "red" }}>{error}</p> : ""} */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {reserror && <p style={{ color: "red" }}>{reserror}</p>}
 
       <button type="submit">Sign Up</button>
     </form>

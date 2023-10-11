@@ -6,20 +6,25 @@ import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, redirect } from "react-router-dom";
 
 import { store } from "../../App";
 
 import SignUp from "../SignUp";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [auth, setAuth] = useContext(store);
 
-  const navigate = useNavigate();
+  console.log("auth=======", auth);
+
+  // console.log(navigate);
 
   const [tab, active] = useState(1);
 
   const [error, setError] = useState("");
+
+  const [reserror, setResError] = useState("");
 
   const [user, setUser] = useState({ email: "", password: "" });
 
@@ -33,7 +38,9 @@ const Login = () => {
     localStorage.setItem("token", token);
   };
 
-  const sendLoginDetails = () => {
+  const token = localStorage.getItem("token");
+
+  const sendLoginDetails = async () => {
     let options = {
       method: "POST",
       headers: {
@@ -42,7 +49,7 @@ const Login = () => {
       },
       body: JSON.stringify(user),
     };
-    fetch("http://localhost:4000/login", options)
+    await fetch("http://localhost:4000/login", options)
       .then((res) => {
         console.log(res);
         if (res.ok) {
@@ -52,26 +59,34 @@ const Login = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("data===", data);
         toast(data?.message);
-        setError(data);
 
         saveTokeInLocal(data?.token);
-        navigate("/");
+        setAuth(data?.token);
       })
       .catch((err) => {
         console.log("err", err);
-        setError(err?.message);
+        setResError(err?.error);
 
-        toast.warn(err);
+        toast.warn(err?.error);
       });
   };
 
   const LoginSubmitHandler = (e) => {
     e.preventDefault();
-    sendLoginDetails();
-    console.log(user);
+    if (password.length < 8) {
+      setError("password length must be above 8");
+    } else {
+      setError("");
+      sendLoginDetails();
+      console.log(user);
+    }
   };
+
+  if (auth) {
+    navigate("/");
+  }
+
   return (
     <div className="login-container">
       <div className="tabs">
@@ -110,11 +125,14 @@ const Login = () => {
               id="password"
               name="password"
               value={password}
+              maxLength={8}
               onChange={loginEventHandler}
               placeholder="Enter your password"
               required
             />
           </div>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {reserror && <p style={{ color: "red" }}>{reserror}</p>}
           <button type="submit">Login</button>
         </form>
       ) : (

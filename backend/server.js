@@ -43,7 +43,12 @@ app.post("/signup", async (req, res) => {
       confirmpassword,
     });
     await newUser.save();
-    res.status(200).json({ message: "Registered Successfully" });
+    res
+      .status(200)
+      .json({
+        message:
+          "Registered Successfully Now Please login with your credential",
+      });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal Server Error" });

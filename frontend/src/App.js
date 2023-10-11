@@ -11,20 +11,20 @@ import Home from "./components/Home";
 import Contact from "./components/Contact";
 import Users from "./components/Users";
 import NotFound from "./components/NotFound";
-import PrivateRoute from "./components/PriviteRoute";
+import PrivateRoute from "./components/PrivateRoute";
 import Login from "./components/Login";
 
 export const store = createContext();
 
 function App() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(null);
   return (
     <store.Provider value={[auth, setAuth]}>
       <Header />
       <div className="App">
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={4000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -32,7 +32,6 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="light"
         />
 
         <Routes>
