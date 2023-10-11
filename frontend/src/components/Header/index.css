@@ -1,0 +1,49 @@
+.header {
+    background: black;
+    color: azure;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+}
+
+.header ul {
+    list-style-type: none;
+    text-transform: uppercase;
+    display: flex;
+    width: 80%;
+}
+
+.header ul>* {
+
+    flex-basis: 100%;
+    text-align: center;
+    margin: 0px 30px;
+    color: azure;
+    text-decoration: none;
+
+}
+
+.header ul li::after {
+    content: "";
+    height: 5px;
+    background-color: red;
+    width: 0%;
+    display: block;
+    transition: all ease-in-out 0.4s;
+    margin: auto;
+
+}
+
+.header ul li:hover::after {
+    content: "";
+
+    background-color: red;
+    width: 50%;
+    display: block;
+    margin: auto;
+
+}
+
+.header button {
+    padding: 10px 20px;
+}
