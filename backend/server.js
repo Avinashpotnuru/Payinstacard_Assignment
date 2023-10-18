@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const jwt = require("jsonwebtoken");
 
+const bcrypt = require("bcrypt");
+
 const cors = require("cors");
 
 const app = express();
@@ -36,19 +38,20 @@ app.post("/signup", async (req, res) => {
     if (password !== confirmpassword) {
       return res.status(400).json({ message: "Passwords are not matching" });
     }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
     let newUser = new RegisterUser({
       username,
       email,
-      password,
-      confirmpassword,
+      password: hashedPassword,
+      confirmpassword: hashedPassword,
     });
+
     await newUser.save();
-    res
-      .status(200)
-      .json({
-        message:
-          "Registered Successfully Now Please login with your credential",
-      });
+
+    res.status(200).json({
+      message: "Registered Successfully Now Please login with your credential",
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -59,10 +62,14 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     let exist = await RegisterUser.findOne({ email });
+
     if (!exist) {
       return res.status(400).json({ message: "User Not Found" });
     }
-    if (exist.password !== password) {
+
+    const comparePass = await bcrypt.compare(password, exist.password);
+
+    if (!comparePass) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
     let payload = {

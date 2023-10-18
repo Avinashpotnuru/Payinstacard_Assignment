@@ -31,11 +31,9 @@ const Users = () => {
         <tr>
           <th>USER NAME</th>
           <th>EMAIL</th>
-          <th>PASSWORD</th>
         </tr>
         <td>{user?.username}</td>
         <td>{user?.email}</td>
-        <td>{user?.password}</td>
       </table>
     </div>
   );
