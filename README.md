@@ -1,3 +1,3 @@
-1.change the drive cd Payinstacard-Assignment.
+1. change to drive cd Payinstacard-Assignment.
 
-2.start server command npm start.
+2. run npm start.
